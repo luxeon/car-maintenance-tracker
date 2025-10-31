@@ -1,3 +1,8 @@
 spring:
   application:
     name: car-maintanance-tracker
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cmt
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver

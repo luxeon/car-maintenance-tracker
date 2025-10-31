@@ -1,0 +1,15 @@
+services:
+
+  cmt-db:
+    image: postgres:18-alpine
+    restart: always
+    container_name: cmt-db
+    shm_size: '256mb'
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: cmt
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/data/docker/cmt/db:/var/lib/postgresql/18/docker:delegated
