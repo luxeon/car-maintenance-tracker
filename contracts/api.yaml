@@ -1,0 +1,64 @@
+openapi: 3.1.0
+info:
+  title: Car Maintenance Tracker API
+  version: 1.0.0
+
+paths:
+  /users:
+    post:
+      summary: Create a new user
+      description: Registers a new user with an email, password, and password confirmation.
+      operationId: create
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+
+      responses:
+        "201":
+          description: User successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+
+components:
+  schemas:
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        email:
+          type: string
+          format: email
+          example: user@example.com
+
+    UserRegistrationRequest:
+      type: object
+      required:
+        - email
+        - password
+        - passwordRepeat
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          example: mySecurePass123
+        passwordRepeat:
+          type: string
+          format: password
+          minLength: 8
+          example: mySecurePass123
