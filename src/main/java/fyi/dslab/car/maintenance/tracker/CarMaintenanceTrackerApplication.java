@@ -1,13 +1,13 @@
-package fyi.dslab.car.maintanance.tracker;
+package fyi.dslab.car.maintenance.tracker;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class CarMaintananceTrackerApplication {
+public class CarMaintenanceTrackerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(CarMaintananceTrackerApplication.class, args);
+		SpringApplication.run(CarMaintenanceTrackerApplication.class, args);
 	}
 
 }

@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>fyi.dslab</groupId>
-    <artifactId>car-maintanance-tracker</artifactId>
+    <artifactId>car-maintenance-tracker</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>car-maintanance-tracker</name>
+    <name>car-maintenance-tracker</name>
     <description>Car Maintenance Tracker App</description>
     <properties>
         <java.version>25</java.version>
@@ -172,8 +172,8 @@
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/contracts/api.yaml</inputSpec>
-                            <apiPackage>fyi.dslab.car.maintanance.tracker.user.api</apiPackage>
-                            <modelPackage>fyi.dslab.car.maintanance.tracker.user.api.model</modelPackage>
+                            <apiPackage>fyi.dslab.car.maintenance.tracker.user.api</apiPackage>
+                            <modelPackage>fyi.dslab.car.maintenance.tracker.user.api.model</modelPackage>
                         </configuration>
                     </execution>
                 </executions>

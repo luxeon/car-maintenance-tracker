@@ -1,4 +1,4 @@
-package fyi.dslab.car.maintanance.tracker;
+package fyi.dslab.car.maintenance.tracker;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;

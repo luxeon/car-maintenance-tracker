@@ -1,6 +1,6 @@
 spring:
   application:
-    name: car-maintanance-tracker
+    name: car-maintenance-tracker
   datasource:
     url: jdbc:postgresql://localhost:5432/cmt
     username: postgres
