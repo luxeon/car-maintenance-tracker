@@ -43,6 +43,7 @@ components:
 
     UserRegistrationRequest:
       type: object
+      x-class-extra-annotation: "@fyi.dslab.car.maintenance.tracker.users.validation.EqualPasswords"
       required:
         - email
         - password

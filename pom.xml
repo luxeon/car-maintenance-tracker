@@ -20,6 +20,7 @@
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <springdoc-openapi-starter-webmvc-ui.version>2.8.13</springdoc-openapi-starter-webmvc-ui.version>
         <jackson-databind-nullable.version>0.2.8</jackson-databind-nullable.version>
+        <json-unit-spring.version>4.1.1</json-unit-spring.version>
 
         <openapi-generator-maven-plugin.version>7.17.0</openapi-generator-maven-plugin.version>
     </properties>
@@ -51,6 +52,10 @@
         <dependency>
             <groupId>org.springframework.modulith</groupId>
             <artifactId>spring-modulith-starter-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <dependency>
@@ -115,6 +120,12 @@
             <artifactId>postgresql</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>net.javacrumbs.json-unit</groupId>
+            <artifactId>json-unit-spring</artifactId>
+            <version>${json-unit-spring.version}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <dependencyManagement>
         <dependencies>
@@ -171,7 +182,7 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <inputSpec>${project.basedir}/contracts/api.yaml</inputSpec>
+                            <inputSpec>${project.basedir}/contracts/users.yaml</inputSpec>
                             <apiPackage>fyi.dslab.car.maintenance.tracker.user.api</apiPackage>
                             <modelPackage>fyi.dslab.car.maintenance.tracker.user.api.model</modelPackage>
                         </configuration>
@@ -186,6 +197,11 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
+                        </path>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
                         </path>
                         <path>
                             <groupId>org.springframework.boot</groupId>
