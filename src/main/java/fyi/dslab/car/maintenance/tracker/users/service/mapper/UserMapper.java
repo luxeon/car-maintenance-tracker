@@ -1,7 +1,6 @@
-package fyi.dslab.car.maintenance.tracker.users.mapper;
+package fyi.dslab.car.maintenance.tracker.users.service.mapper;
 
 import fyi.dslab.car.maintenance.tracker.user.api.model.UserRegistrationRequestDTO;
-import fyi.dslab.car.maintenance.tracker.users.UserDTO;
 import fyi.dslab.car.maintenance.tracker.users.repository.entity.UserEntity;
 import lombok.Setter;
 import org.mapstruct.Mapper;

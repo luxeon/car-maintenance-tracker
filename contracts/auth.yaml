@@ -1,0 +1,49 @@
+openapi: 3.1.0
+info:
+  title: Car Maintenance Tracker API
+  version: 1.0.0
+
+paths:
+  /login:
+    post:
+      summary: Authenticate a user
+      description: Authenticates a user with an email and password
+      operationId: login
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        "200":
+          description: User authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+        password:
+          type: string
+          minLength: 8
+          example: mySecurePass123
+
+    LoginResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
