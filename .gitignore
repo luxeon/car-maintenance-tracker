@@ -18,3 +18,5 @@ target/
 *.iws
 *.iml
 *.ipr
+
+/src/main/resources/application-local.yml

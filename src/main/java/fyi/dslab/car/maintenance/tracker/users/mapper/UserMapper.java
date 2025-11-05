@@ -6,7 +6,6 @@ import fyi.dslab.car.maintenance.tracker.users.repository.entity.UserEntity;
 import lombok.Setter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +25,4 @@ public abstract class UserMapper {
     public String hashPassword(String sourcePassword) {
         return passwordEncoder.encode(sourcePassword);
     }
-
-    public abstract UserDTO toUserDTO(UserEntity entity);
 }

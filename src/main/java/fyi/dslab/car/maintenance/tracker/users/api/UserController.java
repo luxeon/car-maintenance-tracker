@@ -4,7 +4,8 @@ import fyi.dslab.car.maintenance.tracker.user.api.UsersControllerApi;
 import fyi.dslab.car.maintenance.tracker.user.api.model.UserRegistrationRequestDTO;
 import fyi.dslab.car.maintenance.tracker.user.api.model.UserResponseDTO;
 import fyi.dslab.car.maintenance.tracker.users.UserDTO;
-import fyi.dslab.car.maintenance.tracker.users.UserService;
+import fyi.dslab.car.maintenance.tracker.users.repository.entity.UserEntity;
+import fyi.dslab.car.maintenance.tracker.users.service.InternalUserService;
 import fyi.dslab.car.maintenance.tracker.users.api.mapper.UserApiMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController implements UsersControllerApi {
 
-    private final UserService userService;
+    private final InternalUserService internalUserService;
 
     private final UserApiMapper mapper;
 
     @Override
     public UserResponseDTO create(UserRegistrationRequestDTO userRegistrationRequestDTO) {
-        UserDTO createdUser = userService.create(userRegistrationRequestDTO);
+        UserEntity createdUser = internalUserService.create(userRegistrationRequestDTO);
         return mapper.toUserResponseDTO(createdUser);
     }
 }
