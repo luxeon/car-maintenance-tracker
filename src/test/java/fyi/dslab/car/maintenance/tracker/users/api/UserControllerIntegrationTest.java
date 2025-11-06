@@ -41,8 +41,7 @@ class UserControllerIntegrationTest {
                 }
                 """;
 
-        mockMvc.perform(post(PATH_CREATE)
-                        .content(requestBody)
+        mockMvc.perform(post(PATH_CREATE).content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(json().isEqualTo(expectedResponse));
@@ -58,17 +57,16 @@ class UserControllerIntegrationTest {
                 }
                 """;
 
-//        String expectedResponse = """
-//                {
-//                "id": "${json-unit.any-number}",
-//                "email": "test@example.com"
-//                }
-//                """;
+        //        String expectedResponse = """
+        //                {
+        //                "id": "${json-unit.any-number}",
+        //                "email": "test@example.com"
+        //                }
+        //                """;
 
-        mockMvc.perform(post(PATH_CREATE)
-                        .content(requestBody)
+        mockMvc.perform(post(PATH_CREATE).content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
-                //.andExpect(json().isEqualTo(expectedResponse));
+        //.andExpect(json().isEqualTo(expectedResponse));
     }
 }

@@ -3,6 +3,7 @@ package fyi.dslab.car.maintenance.tracker.users.auth.util;
 import fyi.dslab.car.maintenance.tracker.users.auth.config.JwtProperties;
 import fyi.dslab.car.maintenance.tracker.users.auth.service.model.AuthenticatedUserDetails;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +36,15 @@ public class JwtUtils {
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
-        SecretKey key =
-                Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
-        return Jwts.builder().claims(claims).subject(subject).issuedAt(new Date(System.currentTimeMillis())).expiration(new Date(System.currentTimeMillis() + jwtProperties.getExpirationMs())).signWith(key).compact();
+        SecretKey key = Keys.hmacShaKeyFor(jwtProperties.getSecret()
+                .getBytes(StandardCharsets.UTF_8));
+        return Jwts.builder()
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + jwtProperties.getExpirationMs()))
+                .signWith(key)
+                .compact();
     }
 
     private String extractUsername(String token) {
@@ -48,15 +55,20 @@ public class JwtUtils {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private <T> T extractClaim(String token, java.util.function.Function<Claims, T> claimsResolver) {
+    private <T> T extractClaim(String token,
+                               java.util.function.Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
     private Claims extractAllClaims(String token) {
-        SecretKey key =
-                Keys.hmacShaKeyFor(jwtProperties.getSecret().getBytes(StandardCharsets.UTF_8));
-        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
+        SecretKey key = Keys.hmacShaKeyFor(jwtProperties.getSecret()
+                .getBytes(StandardCharsets.UTF_8));
+        JwtParser jwtParser = Jwts.parser()
+                .verifyWith(key)
+                .build();
+        return jwtParser.parseSignedClaims(token)
+                .getPayload();
     }
 
     private Boolean isTokenExpired(String token) {
