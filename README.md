@@ -3,6 +3,8 @@
 ## Overview
 The Car Maintenance Tracker application helps vehicle owners monitor upcoming service intervals and record past maintenance. It keeps a transparent overview of every vehicle a user owns, generates maintenance plans from manufacturer or custom templates, and schedules reminders so nothing falls through the cracks.
 
+[Watch the development process on YouTube](https://www.youtube.com/playlist?list=PLSfRPFIY2Q-rhyr2YsW7g7AXrEGWC9kud).
+
 ## Key Features
 - Manage multiple vehicles per user with manufacturer details and odometer tracking.
 - Auto-generate maintenance checklists from reusable plan templates and personalize schedules.
