@@ -1,6 +1,8 @@
 package fyi.dslab.car.maintenance.tracker.users.api;
 
 import fyi.dslab.car.maintenance.tracker.IntegrationTest;
+import fyi.dslab.car.maintenance.tracker.users.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -16,6 +18,14 @@ class UserControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @AfterEach
+    void cleanUpUsers() {
+        userRepository.deleteAll();
+    }
 
     @Test
     void shouldRegisterNewUser() throws Exception {

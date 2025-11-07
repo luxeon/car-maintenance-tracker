@@ -3,4 +3,4 @@ car:
     tracker:
       security:
         jwt:
-          secret: my-secret
+          secret: 37a2bf8436a1e55790bb46d1ef6000ee
