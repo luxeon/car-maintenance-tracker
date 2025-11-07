@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 @Component
 @RequiredArgsConstructor
@@ -24,8 +25,8 @@ public class JwtUtils {
 
     public String generateToken(AuthenticatedUserDetails user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", user.getId());
-        claims.put("email", user.getEmail());
+        claims.put("id", user.id());
+        claims.put("email", user.email());
         claims.put("roles", user.getAuthorities());
         return createToken(claims, user.getUsername());
     }
@@ -55,8 +56,7 @@ public class JwtUtils {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    private <T> T extractClaim(String token,
-                               java.util.function.Function<Claims, T> claimsResolver) {
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }

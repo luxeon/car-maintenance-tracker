@@ -1,0 +1,6 @@
+car:
+  maintenance:
+    tracker:
+      security:
+        jwt:
+          secret: my-secret
