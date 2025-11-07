@@ -1,4 +1,4 @@
-package fyi.dslab.car.maintenance.tracker.users.auth.service.model;
+package fyi.dslab.car.maintenance.tracker.users.service.model;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

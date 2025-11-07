@@ -1,7 +1,7 @@
-package fyi.dslab.car.maintenance.tracker.users.auth.service.service;
+package fyi.dslab.car.maintenance.tracker.users.service;
 
-import fyi.dslab.car.maintenance.tracker.users.auth.service.model.AuthenticatedUserDetails;
 import fyi.dslab.car.maintenance.tracker.users.auth.util.JwtUtils;
+import fyi.dslab.car.maintenance.tracker.users.service.model.AuthenticatedUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

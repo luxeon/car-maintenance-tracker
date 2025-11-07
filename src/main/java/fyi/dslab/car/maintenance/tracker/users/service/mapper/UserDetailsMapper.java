@@ -1,7 +1,7 @@
-package fyi.dslab.car.maintenance.tracker.users.auth.service.mapper;
+package fyi.dslab.car.maintenance.tracker.users.service.mapper;
 
-import fyi.dslab.car.maintenance.tracker.users.auth.service.model.AuthenticatedUserDetails;
 import fyi.dslab.car.maintenance.tracker.users.repository.entity.UserEntity;
+import fyi.dslab.car.maintenance.tracker.users.service.model.AuthenticatedUserDetails;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 

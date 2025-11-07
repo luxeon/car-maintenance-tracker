@@ -1,4 +1,4 @@
-package fyi.dslab.car.maintenance.tracker.users.auth.config;
+package fyi.dslab.car.maintenance.tracker.users.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

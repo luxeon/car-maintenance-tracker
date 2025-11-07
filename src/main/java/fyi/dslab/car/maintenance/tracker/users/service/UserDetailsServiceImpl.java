@@ -1,8 +1,7 @@
-package fyi.dslab.car.maintenance.tracker.users.auth.service.service;
+package fyi.dslab.car.maintenance.tracker.users.service;
 
-import fyi.dslab.car.maintenance.tracker.users.auth.service.mapper.UserDetailsMapper;
 import fyi.dslab.car.maintenance.tracker.users.repository.entity.UserEntity;
-import fyi.dslab.car.maintenance.tracker.users.service.InternalUserService;
+import fyi.dslab.car.maintenance.tracker.users.service.mapper.UserDetailsMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
