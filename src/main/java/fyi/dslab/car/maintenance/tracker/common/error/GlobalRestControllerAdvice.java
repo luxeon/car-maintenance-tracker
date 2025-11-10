@@ -2,6 +2,7 @@ package fyi.dslab.car.maintenance.tracker.common.error;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -53,6 +54,12 @@ public class GlobalRestControllerAdvice {
                 .toList();
 
         return new ErrorResponseDTO(errors);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorResponseDTO handleBadCredentialsException(BadCredentialsException ex) {
+        return new ErrorResponseDTO(List.of(new ErrorDTO(null, "Invalid username or password")));
     }
 
     @ExceptionHandler(Exception.class)
