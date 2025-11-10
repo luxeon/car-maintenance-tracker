@@ -1,0 +1,20 @@
+{
+  "errors": [
+    {
+      "field": "email",
+      "message": "must be a well-formed email address"
+    },
+    {
+      "field": "password",
+      "message": "size must be between 8 and 2147483647"
+    },
+    {
+      "field": "passwordRepeat",
+      "message": "size must be between 8 and 2147483647"
+    },
+    {
+      "field": "userRegistrationRequestDTO",
+      "message": "Passwords don't match"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 package fyi.dslab.car.maintenance.tracker.users.api;
 
 import fyi.dslab.car.maintenance.tracker.IntegrationTest;
+import fyi.dslab.car.maintenance.tracker.common.ResourceLoader;
 import fyi.dslab.car.maintenance.tracker.users.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -51,6 +52,25 @@ class UserControllerIntegrationTest {
     }
 
     @Test
+    void shouldReturnConflictIfUserAlreadyExist() throws Exception {
+        String requestBody = """
+                {
+                    "email": "test@example.com",
+                    "password": "SomePassword123",
+                    "passwordRepeat": "SomePassword123"
+                }
+                """;
+
+        mockMvc.perform(post(PATH_CREATE).content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post(PATH_CREATE).content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isConflict());
+    }
+
+    @Test
     void shouldNotRegisterUserBecausePasswordsAreNotEqual() throws Exception {
         String requestBody = """
                 {
@@ -60,16 +80,28 @@ class UserControllerIntegrationTest {
                 }
                 """;
 
-        //        String expectedResponse = """
-        //                {
-        //                "id": "${json-unit.any-number}",
-        //                "email": "test@example.com"
-        //                }
-        //                """;
+        mockMvc.perform(post(PATH_CREATE).content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(json().isEqualTo("""
+                        {"errors":[{"field":"userRegistrationRequestDTO","message":"Passwords don't match"}]}
+                        """));
+    }
+
+    @Test
+    void shouldNotRegisterUser_fieldErrors() throws Exception {
+        String requestBody = """
+                {
+                    "email": "invalid-email",
+                    "password": "short1",
+                    "passwordRepeat": "short2"
+                }
+                """;
 
         mockMvc.perform(post(PATH_CREATE).content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-        //.andExpect(json().isEqualTo(expectedResponse));
+                .andExpect(status().isBadRequest())
+                .andExpect(json().isEqualTo(ResourceLoader.readFile("fixture/users/create" +
+                        "/response/400.json")));
     }
 }
