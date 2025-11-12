@@ -18,6 +18,7 @@ public class EqualPasswordsValidator implements ConstraintValidator<EqualPasswor
         if (requestDTO.getPassword() == null && requestDTO.getPasswordRepeat() == null) {
             return true;
         }
-        return requestDTO.getPassword() != null && requestDTO.getPassword().equals(requestDTO.getPasswordRepeat());
+        return requestDTO.getPassword() != null && requestDTO.getPassword()
+                .equals(requestDTO.getPasswordRepeat());
     }
 }
