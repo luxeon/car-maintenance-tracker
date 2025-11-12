@@ -216,6 +216,17 @@
                             <modelPackage>fyi.dslab.car.maintenance.tracker.auth.api.model</modelPackage>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Cars API</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/contracts/cars.yaml</inputSpec>
+                            <apiPackage>fyi.dslab.car.maintenance.tracker.car.api</apiPackage>
+                            <modelPackage>fyi.dslab.car.maintenance.tracker.car.api.model</modelPackage>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
