@@ -12,5 +12,6 @@ CREATE TABLE IF NOT EXISTS cars
     model VARCHAR(255) NOT NULL,
     year INTEGER,
     engine VARCHAR(255),
-    fuel_type VARCHAR(255)
+    fuel_type VARCHAR(255),
+    created_at TIMESTAMP NOT NULL DEFAULT now()
 );
