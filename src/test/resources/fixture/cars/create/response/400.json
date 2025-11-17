@@ -1,0 +1,24 @@
+{
+  "errors": [
+    {
+      "field": "engine",
+      "message": "size must be between 0 and 255"
+    },
+    {
+      "field": "fuelType",
+      "message": "size must be between 0 and 255"
+    },
+    {
+      "field": "make",
+      "message": "size must be between 1 and 255"
+    },
+    {
+      "field": "model",
+      "message": "must not be null"
+    },
+    {
+      "field": "year",
+      "message": "must be greater than or equal to 1900"
+    }
+  ]
+}
