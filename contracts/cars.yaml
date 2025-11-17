@@ -124,7 +124,7 @@ components:
           maxLength: 255
         year:
           type: integer
-          min: 1900
+          minimum: 1900
         engine:
           type: string
           maxLength: 255
@@ -148,7 +148,7 @@ components:
           maxLength: 255
         year:
           type: integer
-          min: 1900
+          minimum: 1900
         engine:
           type: string
           maxLength: 255

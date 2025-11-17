@@ -58,6 +58,18 @@ class CarControllerIntegrationTest {
     }
 
     @Test
+    void create_whenRequestIsInvalid_shouldReturnBadRequest() throws Exception {
+        UserEntity user = userRepository.findByEmail(USER_EMAIL)
+                .orElseThrow();
+        mockMvc.perform(post(PATH_CREATE, user.getId()).header(HttpHeaders.AUTHORIZATION,
+                                tokenProvider.createByEmail(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(readFile("fixture/cars/create/request/invalid.json")))
+                .andExpect(status().isBadRequest())
+                .andExpect(json().isEqualTo(readFile("fixture/cars/create/response/400.json")));
+    }
+
+    @Test
     void update_whenRequestIsValid_shouldBeOk() throws Exception {
         UserEntity user = userRepository.findByEmail(USER_EMAIL)
                 .orElseThrow();
@@ -84,13 +96,51 @@ class CarControllerIntegrationTest {
     }
 
     @Test
+    void update_whenRequestIsInvalid_shouldBeBadRequest() throws Exception {
+        UserEntity user = userRepository.findByEmail(USER_EMAIL)
+                .orElseThrow();
+
+        String response =
+                mockMvc.perform(post(PATH_CREATE, user.getId()).header(HttpHeaders.AUTHORIZATION,
+                                        tokenProvider.createByEmail(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(readFile("fixture/cars/create/request/valid.json")))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        long carId = mapper.readTree(response)
+                .get("id")
+                .asLong();
+
+        mockMvc.perform(put(PATH_UPDATE, user.getId(), carId).header(HttpHeaders.AUTHORIZATION,
+                                tokenProvider.createByEmail(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(readFile("fixture/cars/update/request/invalid.json")))
+                .andExpect(status().isBadRequest())
+                .andExpect(json().isEqualTo(readFile("fixture/cars/update/response/400.json")));
+    }
+
+    @Test
+    void update_whenCarIdIsNotPresentInTheDb_shouldReturnNotFound() throws Exception {
+        UserEntity user = userRepository.findByEmail(USER_EMAIL)
+                .orElseThrow();
+
+        mockMvc.perform(put(PATH_UPDATE, user.getId(), 99999L).header(HttpHeaders.AUTHORIZATION,
+                                tokenProvider.createByEmail(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(readFile("fixture/cars/update/request/valid.json")))
+                .andExpect(status().isNotFound())
+                .andExpect(json().isEqualTo(readFile("fixture/cars/update/response/404.json")));
+    }
+
+    @Test
     void delete_whenRequestIsValid_shouldBeOk() throws Exception {
         UserEntity user = userRepository.findByEmail(USER_EMAIL)
                 .orElseThrow();
 
         String response =
-                mockMvc.perform(post(PATH_CREATE, user.getId())
-                                .header(HttpHeaders.AUTHORIZATION,
+                mockMvc.perform(post(PATH_CREATE, user.getId()).header(HttpHeaders.AUTHORIZATION,
                                         tokenProvider.createByEmail(user))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(readFile("fixture/cars/create/request/valid.json")))
@@ -111,11 +161,24 @@ class CarControllerIntegrationTest {
     }
 
     @Test
+    void delete_whenCarIdIsNotPresentInTheDb_shouldReturnNotFound() throws Exception {
+        UserEntity user = userRepository.findByEmail(USER_EMAIL)
+                .orElseThrow();
+
+        mockMvc.perform(delete(PATH_DELETE, user.getId(), 99999L).header(HttpHeaders.AUTHORIZATION,
+                        tokenProvider.createByEmail(user)))
+                .andExpect(status().isNotFound())
+                .andExpect(json().isEqualTo(readFile("fixture/cars/delete/response/404.json")));
+    }
+
+    @Test
     void findCarsByUserId_shouldReturnOneCarInTheList() throws Exception {
         UserEntity user = userRepository.findByEmail(USER_EMAIL)
                 .orElseThrow();
 
-        String response = mockMvc.perform(post(PATH_CREATE, user.getId()).header(HttpHeaders.AUTHORIZATION, tokenProvider.createByEmail(user))
+        String response =
+                mockMvc.perform(post(PATH_CREATE, user.getId()).header(HttpHeaders.AUTHORIZATION,
+                                        tokenProvider.createByEmail(user))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(readFile("fixture/cars/create/request/valid.json")))
                 .andReturn()
@@ -126,12 +189,11 @@ class CarControllerIntegrationTest {
                 .get("id")
                 .asLong();
 
-        mockMvc.perform(get(PATH_FIND_BY_USER_ID, user.getId())
-                        .header(HttpHeaders.AUTHORIZATION, tokenProvider.createByEmail(user)))
+        mockMvc.perform(get(PATH_FIND_BY_USER_ID, user.getId()).header(HttpHeaders.AUTHORIZATION,
+                        tokenProvider.createByEmail(user)))
                 .andExpect(status().isOk())
-                .andExpect(json().isEqualTo(readFile("fixture/cars/getByUserId" +
-                        "/response/200_single_car.json")
-                        .formatted(carId)));
+                .andExpect(json().isEqualTo(readFile("fixture/cars/getByUserId" + "/response" +
+                        "/200_single_car.json").formatted(carId)));
     }
 
     @Test
@@ -139,10 +201,10 @@ class CarControllerIntegrationTest {
         UserEntity user = userRepository.findByEmail(USER_EMAIL)
                 .orElseThrow();
 
-        mockMvc.perform(get(PATH_FIND_BY_USER_ID, user.getId())
-                        .header(HttpHeaders.AUTHORIZATION, tokenProvider.createByEmail(user)))
+        mockMvc.perform(get(PATH_FIND_BY_USER_ID, user.getId()).header(HttpHeaders.AUTHORIZATION,
+                        tokenProvider.createByEmail(user)))
                 .andExpect(status().isOk())
-                .andExpect(json().isEqualTo(readFile("fixture/cars/getByUserId" +
-                        "/response/200_empty.json")));
+                .andExpect(json().isEqualTo(readFile("fixture/cars/getByUserId" + "/response" +
+                        "/200_empty.json")));
     }
 }
