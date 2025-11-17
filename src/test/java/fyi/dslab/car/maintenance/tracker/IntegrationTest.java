@@ -10,7 +10,7 @@ import org.springframework.test.context.jdbc.SqlMergeMode;
 
 import java.lang.annotation.*;
 
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_CLASS;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 
 @Inherited
 @Target(ElementType.TYPE)
@@ -21,6 +21,6 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)
 @SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
-@Sql(executionPhase = AFTER_TEST_CLASS, value = "/db/clean.sql")
+@Sql(executionPhase = AFTER_TEST_METHOD, value = "/db/clean.sql")
 public @interface IntegrationTest {
 }

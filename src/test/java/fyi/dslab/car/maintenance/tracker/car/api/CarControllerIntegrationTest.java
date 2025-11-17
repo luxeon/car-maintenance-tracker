@@ -20,12 +20,12 @@ import static fyi.dslab.car.maintenance.tracker.car.api.CarsControllerApi.*;
 import static fyi.dslab.car.maintenance.tracker.common.ResourceLoader.readFile;
 import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_CLASS;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @IntegrationTest
-@Sql(executionPhase = BEFORE_TEST_CLASS, value = "/db/insert-users.sql")
+@Sql(executionPhase = BEFORE_TEST_METHOD, value = "/db/insert-users.sql")
 class CarControllerIntegrationTest {
 
     private static final String USER_EMAIL = "dmytro.shvechikov@example.com";
@@ -46,7 +46,7 @@ class CarControllerIntegrationTest {
     private ObjectMapper mapper;
 
     @Test
-    void create_created() throws Exception {
+    void create_whenRequestIsValid_shouldBeOk() throws Exception {
         UserEntity user = userRepository.findByEmail(USER_EMAIL)
                 .orElseThrow();
         mockMvc.perform(post(PATH_CREATE, user.getId()).header(HttpHeaders.AUTHORIZATION,
@@ -58,7 +58,7 @@ class CarControllerIntegrationTest {
     }
 
     @Test
-    void update_ok() throws Exception {
+    void update_whenRequestIsValid_shouldBeOk() throws Exception {
         UserEntity user = userRepository.findByEmail(USER_EMAIL)
                 .orElseThrow();
 
@@ -84,12 +84,13 @@ class CarControllerIntegrationTest {
     }
 
     @Test
-    void delete_ok() throws Exception {
+    void delete_whenRequestIsValid_shouldBeOk() throws Exception {
         UserEntity user = userRepository.findByEmail(USER_EMAIL)
                 .orElseThrow();
 
         String response =
-                mockMvc.perform(post(PATH_CREATE, user.getId()).header(HttpHeaders.AUTHORIZATION,
+                mockMvc.perform(post(PATH_CREATE, user.getId())
+                                .header(HttpHeaders.AUTHORIZATION,
                                         tokenProvider.createByEmail(user))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(readFile("fixture/cars/create/request/valid.json")))
@@ -107,5 +108,41 @@ class CarControllerIntegrationTest {
 
         List<CarEntity> cars = carRepository.findAll();
         assertThat(cars).isEmpty();
+    }
+
+    @Test
+    void findCarsByUserId_shouldReturnOneCarInTheList() throws Exception {
+        UserEntity user = userRepository.findByEmail(USER_EMAIL)
+                .orElseThrow();
+
+        String response = mockMvc.perform(post(PATH_CREATE, user.getId()).header(HttpHeaders.AUTHORIZATION, tokenProvider.createByEmail(user))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(readFile("fixture/cars/create/request/valid.json")))
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        long carId = mapper.readTree(response)
+                .get("id")
+                .asLong();
+
+        mockMvc.perform(get(PATH_FIND_BY_USER_ID, user.getId())
+                        .header(HttpHeaders.AUTHORIZATION, tokenProvider.createByEmail(user)))
+                .andExpect(status().isOk())
+                .andExpect(json().isEqualTo(readFile("fixture/cars/getByUserId" +
+                        "/response/200_single_car.json")
+                        .formatted(carId)));
+    }
+
+    @Test
+    void findCarsByUserId_shouldReturnEmptyList() throws Exception {
+        UserEntity user = userRepository.findByEmail(USER_EMAIL)
+                .orElseThrow();
+
+        mockMvc.perform(get(PATH_FIND_BY_USER_ID, user.getId())
+                        .header(HttpHeaders.AUTHORIZATION, tokenProvider.createByEmail(user)))
+                .andExpect(status().isOk())
+                .andExpect(json().isEqualTo(readFile("fixture/cars/getByUserId" +
+                        "/response/200_empty.json")));
     }
 }
