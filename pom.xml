@@ -24,6 +24,12 @@
         <json-unit-spring.version>4.1.1</json-unit-spring.version>
 
         <openapi-generator-maven-plugin.version>7.17.0</openapi-generator-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
+
+        <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
+        <sonar.language>java</sonar.language>
     </properties>
     <dependencies>
         <dependency>
@@ -216,6 +222,17 @@
                             <modelPackage>fyi.dslab.car.maintenance.tracker.auth.api.model</modelPackage>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>Cars API</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/contracts/cars.yaml</inputSpec>
+                            <apiPackage>fyi.dslab.car.maintenance.tracker.car.api</apiPackage>
+                            <modelPackage>fyi.dslab.car.maintenance.tracker.car.api.model</modelPackage>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -250,6 +267,31 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <configuration>
+                    <excludes>
+                        <exclude>fyi/dslab/car/maintenance/tracker/*/api/model/**</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
