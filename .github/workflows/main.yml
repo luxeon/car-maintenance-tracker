@@ -47,4 +47,4 @@ jobs:
           cache: maven
 
       - name: Run tests with Maven
-        run: mvn test --file pom.xml
+        run: mvn -B -ntp clean verify
