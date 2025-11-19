@@ -13,3 +13,12 @@ services:
       - "5432:5432"
     volumes:
       - ~/data/docker/cmt/db:/var/lib/postgresql/18/docker:delegated
+
+  cmt-redis:
+    image: redis:8.4.0-alpine
+    restart: always
+    container_name: cmt-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ~/data/docker/cmt/redis:/data

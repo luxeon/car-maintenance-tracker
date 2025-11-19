@@ -4,6 +4,21 @@ info:
   version: 1.0.0
 
 paths:
+  /auth-code:
+    post:
+      summary: Generate and send auth_code by email
+      operationId: generateAndSendAuthCode
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateAndSendAuthCodeRequest'
+      responses:
+        "201":
+          description: Auth_code is generated and sent to user email
   /login:
     post:
       summary: Authenticate a user
@@ -27,6 +42,17 @@ paths:
 
 components:
   schemas:
+
+    GenerateAndSendAuthCodeRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+          example: user@example.com
+
     LoginRequest:
       type: object
       required:
