@@ -55,3 +55,4 @@ jobs:
           args: >
             -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }}
             -Dsonar.organization=${{ vars.SONAR_ORG }}
+            -Dsonar.java.binaries=target/classes
