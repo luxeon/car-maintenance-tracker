@@ -1,5 +1,6 @@
 package fyi.dslab.car.maintenance.tracker;
 
+import com.redis.testcontainers.RedisContainer;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.context.annotation.Bean;
@@ -15,4 +16,9 @@ public class TestcontainersConfiguration {
         return new PostgreSQLContainer<>(DockerImageName.parse("postgres:18-alpine"));
     }
 
+    @Bean
+    @ServiceConnection
+    RedisContainer redisContainer() {
+        return new RedisContainer(DockerImageName.parse("redis:8.4.0-alpine"));
+    }
 }

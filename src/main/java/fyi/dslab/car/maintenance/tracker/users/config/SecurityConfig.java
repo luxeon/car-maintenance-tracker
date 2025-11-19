@@ -13,13 +13,16 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/users", "/login", "/swagger" +
-                                "-ui.html", "/swagger-ui/**", "/v3" + "/api-docs/**",
-                                "/users/*/cars", "/users/*/cars/**")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
-                .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/users",
+                        "/auth-code",
+                        "/login",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/v3" + "/api-docs/**",
+                        "/users/*/cars",
+                        "/users/*/cars/**").permitAll().anyRequest().authenticated())
+                .sessionManagement(configurer -> configurer.sessionCreationPolicy(
+                        SessionCreationPolicy.STATELESS))
                 //                .authenticationProvider(authenticationProvider)
                 //                .addFilterBefore(jwtAuthenticationFilter,
                 //                UsernamePasswordAuthenticationFilter.class)

@@ -8,5 +8,7 @@ car:
   maintenance:
     tracker:
       security:
+        auth-code:
+          time-to-live-sec: 300
         jwt:
           expirationMs: 3600000
