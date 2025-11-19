@@ -32,8 +32,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build  # Ensures tests run only after the build job succeeds
     env:
-      SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
-      SONAR_ORG: ${{ vars.SONAR_ORG }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
       - name: Checkout repository
@@ -47,4 +45,4 @@ jobs:
           cache: maven
 
       - name: Run tests with Maven
-        run: mvn -B -ntp clean verify
+        run: mvn -B -ntp clean verify -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ vars.SONAR_ORG }}
