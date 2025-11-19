@@ -45,4 +45,4 @@ jobs:
           cache: maven
 
       - name: Run tests with Maven
-        run: mvn -B -ntp clean verify -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ vars.SONAR_ORG }}
+        run: mvn -B -ntp clean verify sonar:sonar -Dsonar.projectKey=${{ vars.SONAR_PROJECT_KEY }} -Dsonar.organization=${{ vars.SONAR_ORG }}
