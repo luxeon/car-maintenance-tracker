@@ -24,7 +24,7 @@ public class InternalUserService {
     public UserEntity create(UserRegistrationRequestDTO requestDTO) {
         try {
             return userRepository.save(mapper.toUserEntity(requestDTO));
-        } catch (DbActionExecutionException e) {
+        } catch (DbActionExecutionException _) {
             throw new UserAlreadyExistException();
         }
     }

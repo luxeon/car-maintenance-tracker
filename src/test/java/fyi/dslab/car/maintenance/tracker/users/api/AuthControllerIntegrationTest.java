@@ -1,8 +1,10 @@
 package fyi.dslab.car.maintenance.tracker.users.api;
 
 import fyi.dslab.car.maintenance.tracker.IntegrationTest;
+import fyi.dslab.car.maintenance.tracker.users.repository.UserAuthCodeRepository;
 import fyi.dslab.car.maintenance.tracker.users.repository.UserRepository;
 import fyi.dslab.car.maintenance.tracker.users.repository.entity.UserEntity;
+import fyi.dslab.car.maintenance.tracker.users.service.model.UserAuthCode;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +12,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static fyi.dslab.car.maintenance.tracker.auth.api.AuthControllerApi.PATH_GENERATE_AND_SEND_AUTH_CODE;
 import static fyi.dslab.car.maintenance.tracker.auth.api.AuthControllerApi.PATH_LOGIN;
+import static fyi.dslab.car.maintenance.tracker.common.ResourceLoader.readFile;
 import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -25,11 +30,50 @@ class AuthControllerIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
+    private UserAuthCodeRepository userAuthCodeRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @AfterEach
-    void cleanUpUsers() {
-        userRepository.deleteAll();
+    void tearDown() {
+        userAuthCodeRepository.deleteAll();
+    }
+
+    @Test
+    void generateAndSendAuthCode_whenRequestIdValid_shouldBe201() throws Exception {
+        persistUser("login@test.com", "StrongPassword123");
+
+        mockMvc.perform(post(PATH_GENERATE_AND_SEND_AUTH_CODE).content(readFile(
+                        "fixture/auth/generateAndSendAuthCode/request/valid.json"))
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+
+        Iterable<UserAuthCode> codes = userAuthCodeRepository.findAll();
+        assertThat(codes).hasSize(1);
+    }
+
+    @Test
+    void generateAndSendAuthCode_whenTwoRequestMadeWithTheSameEmail_theCodeShouldNotBeRegenerated()
+            throws Exception {
+        persistUser("login@test.com", "StrongPassword123");
+
+        mockMvc.perform(post(PATH_GENERATE_AND_SEND_AUTH_CODE).content(readFile(
+                        "fixture/auth/generateAndSendAuthCode/request/valid.json"))
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+
+        Iterable<UserAuthCode> codes = userAuthCodeRepository.findAll();
+        assertThat(codes).hasSize(1);
+        String firstAuthCode = codes.iterator().next().getAuthCode();
+
+        mockMvc.perform(post(PATH_GENERATE_AND_SEND_AUTH_CODE).content(readFile(
+                        "fixture/auth/generateAndSendAuthCode/request/valid.json"))
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+
+        codes = userAuthCodeRepository.findAll();
+        assertThat(codes).hasSize(1);
+        String secondAuthCode = codes.iterator().next().getAuthCode();
+
+        assertThat(firstAuthCode).isEqualTo(secondAuthCode);
     }
 
     @Test
@@ -49,8 +93,7 @@ class AuthControllerIntegrationTest {
                 }
                 """;
 
-        mockMvc.perform(post(PATH_LOGIN)
-                        .content(requestBody)
+        mockMvc.perform(post(PATH_LOGIN).content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(json().isEqualTo(expectedResponse));
@@ -67,10 +110,8 @@ class AuthControllerIntegrationTest {
                 }
                 """;
 
-        mockMvc.perform(post(PATH_LOGIN)
-                        .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized());
+        mockMvc.perform(post(PATH_LOGIN).content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isUnauthorized());
     }
 
     private void persistUser(String email, String password) {
