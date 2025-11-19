@@ -31,7 +31,9 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: build  # Ensures tests run only after the build job succeeds
-
+    env:
+      SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
+      SONAR_ORG: ${{ vars.SONAR_ORG }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
