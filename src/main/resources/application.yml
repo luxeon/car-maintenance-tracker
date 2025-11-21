@@ -12,3 +12,5 @@ car:
           time-to-live-sec: 300
         jwt:
           expirationMs: 3600000
+      email:
+        from: ${EMAIL_FROM}

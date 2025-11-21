@@ -22,6 +22,7 @@
         <jackson-databind-nullable.version>0.2.8</jackson-databind-nullable.version>
         <jjwt.version>0.13.0</jjwt.version>
         <json-unit-spring.version>4.1.1</json-unit-spring.version>
+        <greenmail-junit5.version>2.1.7</greenmail-junit5.version>
 
         <openapi-generator-maven-plugin.version>7.17.0</openapi-generator-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
@@ -68,6 +69,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
@@ -159,6 +164,11 @@
             <artifactId>json-unit-spring</artifactId>
             <version>${json-unit-spring.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.icegreen</groupId>
+            <artifactId>greenmail-junit5</artifactId>
+            <version>${greenmail-junit5.version}</version>
         </dependency>
     </dependencies>
     <dependencyManagement>
