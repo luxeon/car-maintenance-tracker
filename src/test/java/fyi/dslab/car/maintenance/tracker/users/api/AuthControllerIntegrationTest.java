@@ -64,6 +64,8 @@ class AuthControllerIntegrationTest {
         Iterable<UserAuthCode> codes = userAuthCodeRepository.findAll();
         assertThat(codes).hasSize(1);
 
+        greenMail.waitForIncomingEmail(1);
+
         MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
         assertThat(receivedMessages).hasSize(1);
         MimeMessage receivedMessage = receivedMessages[0];
@@ -82,6 +84,8 @@ class AuthControllerIntegrationTest {
         mockMvc.perform(post(PATH_GENERATE_AND_SEND_AUTH_CODE).content(readFile(
                         "fixture/auth/generateAndSendAuthCode/request/valid.json"))
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+
+        greenMail.waitForIncomingEmail(1);
 
         MimeMessage[] receivedMessages = greenMail.getReceivedMessages();
         assertThat(receivedMessages).hasSize(1);

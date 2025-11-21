@@ -7,6 +7,11 @@ spring:
 car:
   maintenance:
     tracker:
+      async:
+        core-pool-size: 2
+        max-pool-size: 4
+        queue-capacity: 500
+        thread-name-prefix: cmt-async-
       security:
         auth-code:
           time-to-live-sec: 300
