@@ -1,6 +1,16 @@
 car:
   maintenance:
     tracker:
+      email:
+        from: service@greenmail.com
       security:
         jwt:
           secret: 7663da7f13741f5f31e00ff285e8e86971b3a6a586df269193cabecc1cd80f18
+
+spring:
+  mail:
+    host: localhost
+    port: 3025
+    username: foo
+    password: foo-pwd
+
