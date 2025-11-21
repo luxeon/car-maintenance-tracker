@@ -6,7 +6,7 @@ import fyi.dslab.car.maintenance.tracker.users.repository.entity.UserEntity;
 import fyi.dslab.car.maintenance.tracker.users.service.exception.UserAlreadyExistException;
 import fyi.dslab.car.maintenance.tracker.users.service.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +24,7 @@ public class InternalUserService {
     public UserEntity create(UserRegistrationRequestDTO requestDTO) {
         try {
             return userRepository.save(mapper.toUserEntity(requestDTO));
-        } catch (DbActionExecutionException _) {
+        } catch (DuplicateKeyException _) {
             throw new UserAlreadyExistException();
         }
     }

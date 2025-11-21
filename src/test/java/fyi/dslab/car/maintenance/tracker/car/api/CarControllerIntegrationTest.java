@@ -1,6 +1,5 @@
 package fyi.dslab.car.maintenance.tracker.car.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fyi.dslab.car.maintenance.tracker.IntegrationTest;
 import fyi.dslab.car.maintenance.tracker.car.repository.CarRepository;
 import fyi.dslab.car.maintenance.tracker.car.repository.entity.CarEntity;
@@ -13,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ class CarControllerIntegrationTest {
     private CarRepository carRepository;
 
     @Autowired
-    private ObjectMapper mapper;
+    private JsonMapper jsonMapper;
 
     @Test
     void create_whenRequestIsValid_shouldBeOk() throws Exception {
@@ -83,7 +83,7 @@ class CarControllerIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        long carId = mapper.readTree(response)
+        long carId = jsonMapper.readTree(response)
                 .get("id")
                 .asLong();
 
@@ -109,7 +109,7 @@ class CarControllerIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        long carId = mapper.readTree(response)
+        long carId = jsonMapper.readTree(response)
                 .get("id")
                 .asLong();
 
@@ -148,7 +148,7 @@ class CarControllerIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        long carId = mapper.readTree(response)
+        long carId = jsonMapper.readTree(response)
                 .get("id")
                 .asLong();
 
@@ -185,7 +185,7 @@ class CarControllerIntegrationTest {
                 .getResponse()
                 .getContentAsString();
 
-        long carId = mapper.readTree(response)
+        long carId = jsonMapper.readTree(response)
                 .get("id")
                 .asLong();
 
