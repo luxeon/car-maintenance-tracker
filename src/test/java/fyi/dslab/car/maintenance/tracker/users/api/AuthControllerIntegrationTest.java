@@ -73,7 +73,7 @@ class AuthControllerIntegrationTest {
         assertThat(receivedMessage.getAllRecipients()[0].toString()).isEqualTo(USER_EMAIL);
         assertThat(receivedMessage.getSubject()).isEqualTo("Login request to Car Maintenance " + "Tracker");
         assertThat(receivedMessage.getContent()).asString()
-                .containsPattern("^Your auth code is: \\d{4}$");
+                .containsPattern("<span class=\"cta\">\\d{4}</span>");
     }
 
     @Test
