@@ -115,6 +115,7 @@ class AuthControllerIntegrationTest {
                         "fixture/auth/generateAndSendAuthCode/request/valid.json"))
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
         UserAuthCode userAuthCode = userAuthCodeRepository.findById(USER_EMAIL).orElseThrow();
+        greenMail.waitForIncomingEmail(1);
 
         String requestBody = """
                 {
@@ -145,6 +146,7 @@ class AuthControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
         UserAuthCode userAuthCode = userAuthCodeRepository.findById(USER_EMAIL).orElseThrow();
         String invalidAuthCode = generateInvalidAuthCode(userAuthCode.getAuthCode());
+        greenMail.waitForIncomingEmail(1);
 
         String requestBody = """
                 {
