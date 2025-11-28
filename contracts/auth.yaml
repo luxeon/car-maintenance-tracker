@@ -57,7 +57,7 @@ components:
       type: object
       required:
         - email
-        - password
+        - authCode
       properties:
         email:
           type: string
