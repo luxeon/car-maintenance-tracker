@@ -1,12 +1,13 @@
 package fyi.dslab.car.maintenance.tracker.users.service.model;
 
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
-public record AuthenticatedUserDetails(Long id, String email, String password) implements UserDetails {
+public record AuthenticatedUserDetails(Long id, String email) implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -14,8 +15,8 @@ public record AuthenticatedUserDetails(Long id, String email, String password) i
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public @Nullable String getPassword() {
+        return null;
     }
 
     @Override

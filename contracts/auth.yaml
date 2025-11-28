@@ -19,11 +19,11 @@ paths:
       responses:
         "201":
           description: Auth_code is generated and sent to user email
-  /login:
+  /auth:
     post:
       summary: Authenticate a user
-      description: Authenticates a user with an email and password
-      operationId: login
+      description: Authenticates a user with an email and auth_code
+      operationId: auth
       tags:
         - auth
       requestBody:
@@ -31,14 +31,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: '#/components/schemas/AuthRequest'
       responses:
         "200":
           description: User authenticated
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
+                $ref: '#/components/schemas/AuthResponse'
 
 components:
   schemas:
@@ -53,7 +53,7 @@ components:
           format: email
           example: user@example.com
 
-    LoginRequest:
+    AuthRequest:
       type: object
       required:
         - email
@@ -63,12 +63,12 @@ components:
           type: string
           format: email
           example: user@example.com
-        password:
+        authCode:
           type: string
-          minLength: 8
-          example: mySecurePass123
+          minimum: 1000
+          maximum: 9999
 
-    LoginResponse:
+    AuthResponse:
       type: object
       properties:
         accessToken:

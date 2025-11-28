@@ -231,17 +231,6 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>User API</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/contracts/users.yaml</inputSpec>
-                            <apiPackage>fyi.dslab.car.maintenance.tracker.user.api</apiPackage>
-                            <modelPackage>fyi.dslab.car.maintenance.tracker.user.api.model</modelPackage>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>Authentication API</id>
                         <goals>
                             <goal>generate</goal>
