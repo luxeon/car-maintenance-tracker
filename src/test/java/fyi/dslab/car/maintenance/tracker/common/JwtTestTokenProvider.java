@@ -14,7 +14,6 @@ public class JwtTestTokenProvider {
 
     public String createByEmail(UserEntity user) {
         return "Bearer " + jwtUtils.generateToken(new AuthenticatedUserDetails(user.getId(),
-                user.getEmail(),
-                null));
+                user.getEmail()));
     }
 }

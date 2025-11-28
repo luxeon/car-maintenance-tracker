@@ -6,19 +6,18 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 import fyi.dslab.car.maintenance.tracker.IntegrationTest;
 import fyi.dslab.car.maintenance.tracker.users.repository.UserAuthCodeRepository;
 import fyi.dslab.car.maintenance.tracker.users.repository.UserRepository;
-import fyi.dslab.car.maintenance.tracker.users.repository.entity.UserEntity;
 import fyi.dslab.car.maintenance.tracker.users.service.model.UserAuthCode;
 import jakarta.mail.internet.MimeMessage;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static fyi.dslab.car.maintenance.tracker.auth.api.AuthControllerApi.PATH_AUTH;
 import static fyi.dslab.car.maintenance.tracker.auth.api.AuthControllerApi.PATH_GENERATE_AND_SEND_AUTH_CODE;
-import static fyi.dslab.car.maintenance.tracker.auth.api.AuthControllerApi.PATH_LOGIN;
 import static fyi.dslab.car.maintenance.tracker.common.ResourceLoader.readFile;
 import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,7 +32,7 @@ class AuthControllerIntegrationTest {
 
     @RegisterExtension
     static GreenMailExtension greenMail = new GreenMailExtension(ServerSetupTest.SMTP_IMAP).withConfiguration(
-            GreenMailConfiguration.aConfig().withUser(SERVICE_EMAIL, "foo", "foo-pwd"))
+                    GreenMailConfiguration.aConfig().withUser(SERVICE_EMAIL, "foo", "foo-pwd"))
             .withPerMethodLifecycle(true);
 
     @Autowired
@@ -45,8 +44,13 @@ class AuthControllerIntegrationTest {
     @Autowired
     private UserAuthCodeRepository userAuthCodeRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private static String generateInvalidAuthCode(String authCode) {
+        String invalidAuthCode = null;
+        while (invalidAuthCode == null || invalidAuthCode.equals(authCode)) {
+            invalidAuthCode = String.valueOf(RandomUtils.secure().randomLong(1000, 10_000));
+        }
+        return invalidAuthCode;
+    }
 
     @AfterEach
     void tearDown() {
@@ -55,8 +59,6 @@ class AuthControllerIntegrationTest {
 
     @Test
     void generateAndSendAuthCode_whenRequestIdValid_shouldBe201() throws Exception {
-        persistUser(USER_EMAIL, "StrongPassword123");
-
         mockMvc.perform(post(PATH_GENERATE_AND_SEND_AUTH_CODE).content(readFile(
                         "fixture/auth/generateAndSendAuthCode/request/valid.json"))
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
@@ -79,8 +81,6 @@ class AuthControllerIntegrationTest {
     @Test
     void generateAndSendAuthCode_whenTwoRequestMadeWithTheSameEmail_theCodeShouldNotBeRegenerated()
             throws Exception {
-        persistUser(USER_EMAIL, "StrongPassword123");
-
         mockMvc.perform(post(PATH_GENERATE_AND_SEND_AUTH_CODE).content(readFile(
                         "fixture/auth/generateAndSendAuthCode/request/valid.json"))
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
@@ -110,14 +110,19 @@ class AuthControllerIntegrationTest {
 
     @Test
     void shouldAuthenticateUserWithValidCredentials() throws Exception {
-        persistUser(USER_EMAIL, "StrongPassword123");
+        // given
+        mockMvc.perform(post(PATH_GENERATE_AND_SEND_AUTH_CODE).content(readFile(
+                        "fixture/auth/generateAndSendAuthCode/request/valid.json"))
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+        UserAuthCode userAuthCode = userAuthCodeRepository.findById(USER_EMAIL).orElseThrow();
+        greenMail.waitForIncomingEmail(1);
 
         String requestBody = """
                 {
                     "email": "login@test.com",
-                    "password": "StrongPassword123"
+                    "authCode": "%s"
                 }
-                """;
+                """.formatted(userAuthCode.getAuthCode());
 
         String expectedResponse = """
                 {
@@ -125,31 +130,51 @@ class AuthControllerIntegrationTest {
                 }
                 """;
 
-        mockMvc.perform(post(PATH_LOGIN).content(requestBody)
+        mockMvc.perform(post(PATH_AUTH).content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(json().isEqualTo(expectedResponse));
+
+        assertThat(userAuthCodeRepository.findById(USER_EMAIL)).isEmpty();
+        assertThat(userRepository.findByEmail(USER_EMAIL)).isNotNull();
     }
 
     @Test
-    void shouldRejectAuthenticationWhenPasswordIsInvalid() throws Exception {
-        persistUser(USER_EMAIL, "StrongPassword123");
+    void auth_authCodeNotPresent_forbidden() throws Exception {
+        mockMvc.perform(post(PATH_GENERATE_AND_SEND_AUTH_CODE).content(readFile(
+                        "fixture/auth/generateAndSendAuthCode/request/valid.json"))
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isCreated());
+        UserAuthCode userAuthCode = userAuthCodeRepository.findById(USER_EMAIL).orElseThrow();
+        String invalidAuthCode = generateInvalidAuthCode(userAuthCode.getAuthCode());
+        greenMail.waitForIncomingEmail(1);
 
         String requestBody = """
                 {
                     "email": "login@test.com",
-                    "password": "WrongPassword123"
+                    "authCode": "%s"
+                }
+                """.formatted(invalidAuthCode);
+
+        mockMvc.perform(post(PATH_AUTH).content(requestBody)
+                .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isUnauthorized());
+
+        assertThat(userAuthCodeRepository.findById(USER_EMAIL)).isNotEmpty();
+        assertThat(userRepository.findByEmail(USER_EMAIL)).isEmpty();
+    }
+
+    @Test
+    void auth_authCodesAreNotEqual_forbidden() throws Exception {
+        String requestBody = """
+                {
+                    "email": "login@test.com",
+                    "authCode": "1234"
                 }
                 """;
 
-        mockMvc.perform(post(PATH_LOGIN).content(requestBody)
+        mockMvc.perform(post(PATH_AUTH).content(requestBody)
                 .contentType(MediaType.APPLICATION_JSON)).andExpect(status().isUnauthorized());
-    }
 
-    private void persistUser(String email, String password) {
-        UserEntity userEntity = new UserEntity();
-        userEntity.setEmail(email);
-        userEntity.setPassword(passwordEncoder.encode(password));
-        userRepository.save(userEntity);
+        assertThat(userAuthCodeRepository.findById(USER_EMAIL)).isEmpty();
+        assertThat(userRepository.findByEmail(USER_EMAIL)).isEmpty();
     }
 }

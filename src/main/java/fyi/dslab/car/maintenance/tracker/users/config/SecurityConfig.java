@@ -11,11 +11,11 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity http) {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/users",
                         "/auth-code",
-                        "/login",
+                        "/auth",
                         "/swagger-ui.html",
                         "/swagger-ui/**",
                         "/v3" + "/api-docs/**",
